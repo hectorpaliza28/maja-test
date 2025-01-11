@@ -5,7 +5,9 @@ import { Usuario } from '../models/usuario.entity';
 export const obtenerUsuarios = async (req: Request, res: Response): Promise<void> => {
     try {
         const userRepository = MainDataSource.getRepository(Usuario);
-        const usuarios = await userRepository.find();
+        const usuarios = await userRepository.find({
+            select: ['id', 'nombre', 'apellido', 'email', 'rol']
+        });
 
         res.status(200).json({
             success: true,
