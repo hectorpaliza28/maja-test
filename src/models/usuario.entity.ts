@@ -24,4 +24,9 @@ export class Usuario{
         default : 'user'
     })
     rol!: string;
+
+    @Column({
+        default : 1
+    })
+    token_version!: number;
 }

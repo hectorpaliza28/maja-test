@@ -107,18 +107,21 @@ export const login = async(req: Request, res: Response): Promise<void> => {
 
 export const logout = async(req: Request, res: Response): Promise<void> => {
     try{
-        const header = req.headers.authorization;
-        if(!header){
-            res.status(401).json({
+        const usuarioId = (req as any).usuario.id;
+        const userRepository = MainDataSource.getRepository(Usuario);
+        const usuario = await userRepository.findOneBy({id: usuarioId});
+
+        if(!usuario){
+            res.status(404).json({
                 success : false,
-                message : 'No se ha proporcionado un token.'
+                message : 'Usuario no encontrado'
             });
 
             return;
         }
 
-        const token = header.split(" ")[1];
-        tokenBlackList.add(token);
+        usuario.token_version += 1;
+        await userRepository.save(usuario);
 
         res.status(200).json({
             success : true,
@@ -137,7 +140,8 @@ export const logout = async(req: Request, res: Response): Promise<void> => {
 const generarJWT = (usuario: Usuario): any => {
     const payload = {
         id: usuario.id,
-        rol : usuario.rol
+        rol : usuario.rol,
+        token_version : usuario.token_version
     };
 
     const secret = process.env.JWT_SECRET || 'default';
