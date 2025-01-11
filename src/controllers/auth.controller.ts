@@ -3,8 +3,6 @@ import { MainDataSource } from '../config/db.config';
 import { Usuario } from '../models/usuario.entity';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { tokenBlackList } from '../utils/token.list';
-
 
 export const registrarUsuario = async(req: Request, res: Response): Promise<void> => {
     try{
